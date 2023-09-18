@@ -1,0 +1,91 @@
+// 创建新的link元素  
+const link = document.createElement('link');
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = './font/iconfont.css';
+// 将link元素添加到head元素中  
+document.getElementsByTagName('HEAD')[0].appendChild(link);
+
+
+// 创建一个BOX，插入body最前方
+// pointer-events: none; /* 指针事件穿透 */
+const messageBoxEle = document.createElement('div');
+document.body.prepend(messageBoxEle);
+messageBoxEle.style.cssText = `
+position: fixed;
+width: 100%;
+height: 100%;
+z-index: 1000;
+pointer-events: none;
+background-color: transparent;
+`
+
+// type: success/warning/error/info
+export function messageBox({type, message}) {
+
+    const messageItemEle = document.createElement('div');
+    // 将新的 div 添加到 messageBoxEle 元素中  
+    messageBoxEle.appendChild(messageItemEle);
+    
+    messageItemEle.style.cssText = `
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+    opacity: 0;
+    border: 1px solid #ebeef5;
+    width: 400px;
+    height: 50px;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 50px;
+    margin-bottom: 10px;
+    `;
+
+    messageItemEle.innerText = message;
+    if (type == 'success') {
+        // 成功
+        messageItemEle.innerHTML = `<i class='iconfont icon-color-success'></i> ${message}`
+        messageItemEle.style.color = '#67c23a';
+        messageItemEle.style.backgroundColor = '#f0f9eb';
+    } else if (type == 'error') {
+        // 失败
+        messageItemEle.innerHTML = `<i class='iconfont icon-error'></i> ${message}`
+        messageItemEle.style.color = '#f56c6c';
+        messageItemEle.style.backgroundColor = '#fef0f0';
+    } else if (type == 'warning') {
+        // 警告
+        messageItemEle.innerHTML = `<i class='iconfont icon-warning'></i> ${message}`
+        messageItemEle.style.color = '#e6a23c';
+        messageItemEle.style.backgroundColor = '#fdf6ec';
+    } else if (type == 'info') {
+        // 消息
+        messageItemEle.innerHTML = `<i class='iconfont icon-info'></i> ${message}`
+        messageItemEle.style.color = '#909399';
+        messageItemEle.style.backgroundColor = '#edf2fc';
+    } else {
+        return
+    }
+    
+    // 上到下 由快到慢
+    const t1 = setTimeout(() => {  
+        messageItemEle.style.top = "50px";
+        messageItemEle.style.opacity = "1";
+        messageItemEle.style.transition = "all 0.5s ease-out";
+    });
+
+    // 下到上  由慢到快
+    const t2 = setTimeout(() => {
+        messageItemEle.style.top = "0";
+        messageItemEle.style.opacity = "0";
+        messageItemEle.style.transition = "all 0.5s ease-in";
+    }, 2000)
+
+    // 清除定时器，删除元素
+    const t3 = setTimeout(() => {
+        messageItemEle.remove()
+        clearTimeout(t1)
+        clearTimeout(t2)
+        clearTimeout(t3)
+    }, 2500)
+}

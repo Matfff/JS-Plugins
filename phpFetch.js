@@ -21,16 +21,16 @@ export function request({ url, method = 'GET', params = {}, data = {}, headers =
         if (format == 'URLSearchParams') {
             // post 查询字符串
             var body = new URLSearchParams();
+            Object.keys(data).map(key => {body.append(key, data[key])})
+            body = body.toString()
         }
 
         if (format == 'FormData') {
             // post 表单数据
             var body = new FormData();
+            Object.keys(data).map(key => {body.append(key, data[key])})
         }
-
-        Object.keys(data).map(key => {body.append(key, data[key])})
         
-
         // 执行 fetch
         if (method == 'GET') {
             fetch(url, {
@@ -50,7 +50,7 @@ export function request({ url, method = 'GET', params = {}, data = {}, headers =
             fetch(url, {
                 method,
                 headers,
-                body: body.toString()
+                body
             })
                 .then(response => {
                     clearTimeout(t);
